@@ -1,5 +1,6 @@
 package com.mmqhali.cashier_service.domain.payment;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,7 @@ public interface PaymentRepository {
 
     /** Una orden de cobro tiene a lo sumo un pago (UNIQUE en charge_order_id). */
     Optional<Payment> findByChargeOrderId(UUID chargeOrderId);
+
+    /** Todos los cobros del turno, para componer el arqueo al cerrar. */
+    List<Payment> findByShiftId(UUID shiftId);
 }

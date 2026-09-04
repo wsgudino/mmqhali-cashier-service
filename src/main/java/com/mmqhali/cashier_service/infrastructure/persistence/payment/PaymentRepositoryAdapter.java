@@ -5,8 +5,10 @@ import com.mmqhali.cashier_service.domain.payment.PaymentMapper;
 import com.mmqhali.cashier_service.domain.payment.PaymentRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 class PaymentRepositoryAdapter implements PaymentRepository {
@@ -35,5 +37,11 @@ class PaymentRepositoryAdapter implements PaymentRepository {
     @Override
     public Optional<Payment> findByChargeOrderId(UUID chargeOrderId) {
         return jpaRepository.findByChargeOrderId(chargeOrderId).map(PaymentMapper::toDomain);
+    }
+
+    @Override
+    public List<Payment> findByShiftId(UUID shiftId) {
+        return jpaRepository.findByShiftId(shiftId).stream().map(PaymentMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
