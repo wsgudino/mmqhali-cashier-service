@@ -1,3 +1,37 @@
 spring:
   application:
     name: cashier-service
+  flyway:
+    enabled: false # Desactivado a nivel global; cada base física se migra con TenantFlywayRunner
+  jpa:
+    hibernate:
+      ddl-auto: validate # Flyway gestiona el esquema; Hibernate solo valida
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+
+# Configuración Multiempresa MMQHALI
+app:
+  multitenancy:
+    default-tenant: "01"
+    header-name: "X-Company-Code" # Header alternativo para pruebas locales antes de integración con token JWT
+    tenants:
+      # Empresa 01: Ecuasanitas
+      "01":
+        company-name: "Ecuasanitas"
+        url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/${DB_NAME_ECUASANITAS:mmqhali_cashier_ecuasanitas}
+        username: ${DB_USER_ECUASANITAS:${DB_USER:postgres}}
+        password: ${DB_PASSWORD_ECUASANITAS:${DB_PASSWORD:postgres}}
+        driver-class-name: org.postgresql.Driver
+        maximum-pool-size: 5
+      # Empresa 02: PraxMED (Requerida por criterio de terminado del piloto para validar aislamiento)
+      "02":
+        company-name: "PraxMED"
+        url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/${DB_NAME_PRAXMED:mmqhali_cashier_praxmed}
+        username: ${DB_USER_PRAXMED:${DB_USER:postgres}}
+        password: ${DB_PASSWORD_PRAXMED:${DB_PASSWORD:postgres}}
+        driver-class-name: org.postgresql.Driver
+        maximum-pool-size: 5
